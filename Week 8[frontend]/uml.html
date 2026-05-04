@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VenueSync UML Diagrams</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+    <style>
+        body { background: white; padding: 20px; }
+        .diagram-container { padding: 20px; margin-bottom: 20px; background: white; }
+    </style>
+</head>
+<body>
+
+    <!-- 1. Use Case Diagram -->
+    <div id="usecase-diagram" class="diagram-container">
+        <div class="mermaid">
+            flowchart LR
+                Planner([Event Planner])
+                Owner([Venue Owner])
+
+                subgraph VenueSync System
+                    Search[Search Venues]
+                    Book[Request Booking]
+                    Pay[Make Payments]
+                    Guest[Manage Guests]
+                    QR[Generate QR Codes]
+                    
+                    Manage[Manage Venues]
+                    Approve[Approve/Reject Bookings]
+                    Block[Block Dates]
+                    Finance[Track Revenue]
+                end
+
+                Planner --> Search
+                Planner --> Book
+                Planner --> Pay
+                Planner --> Guest
+                Planner --> QR
+
+                Owner --> Manage
+                Owner --> Approve
+                Owner --> Block
+                Owner --> Finance
+        </div>
+    </div>
+
+    <!-- 2. Class Diagram -->
+    <div id="class-diagram" class="diagram-container">
+        <div class="mermaid">
+            classDiagram
+                class User {
+                    +int id
+                    +String name
+                    +String email
+                    +String role
+                    +login()
+                    +register()
+                }
+
+                class Venue {
+                    +int id
+                    +int owner_id
+                    +String name
+                    +String location
+                    +int capacity
+                    +float price_per_day
+                    +create()
+                    +update()
+                    +getAvailability()
+                }
+
+                class Booking {
+                    +int id
+                    +int venue_id
+                    +int planner_id
+                    +Date event_date
+                    +int guest_count
+                    +String status
+                    +float total_amount
+                    +approve()
+                    +cancel()
+                }
+
+                class Payment {
+                    +int id
+                    +int booking_id
+                    +float amount
+                    +String method
+                    +Date paid_at
+                    +process()
+                }
+
+                User "1" -- "*" Venue : owns >
+                User "1" -- "*" Booking : makes >
+                Venue "1" -- "*" Booking : has >
+                Booking "1" -- "*" Payment : receives >
+        </div>
+    </div>
+
+    <!-- 3. Sequence Diagram (Booking Flow) -->
+    <div id="sequence-diagram" class="diagram-container">
+        <div class="mermaid">
+            sequenceDiagram
+                actor Planner
+                participant System as VenueSync
+                actor Owner
+
+                Planner->>System: Search Venues
+                System-->>Planner: Return Venue List
+                Planner->>System: Submit Booking Request
+                System-->>Owner: Notify Request
+                System-->>Planner: Booking Status (Pending)
+                
+                Owner->>System: Approve Booking
+                System-->>Planner: Notify Approval
+                
+                Planner->>System: Submit Payment
+                System-->>Owner: Update Revenue
+                System-->>Planner: Payment Confirmation & Receipt
+        </div>
+    </div>
+
+</body>
+</html>
